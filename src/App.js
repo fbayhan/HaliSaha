@@ -24,6 +24,7 @@ function App() {
     const [characters, updateCharacters] = useState(players);
 
     const [firstTeam, setFirstTeam] = useState([]);
+    const [secondTeam, setSecondTeam] = useState([]);
 
 
     const firstTeamItemsDemo = [{
@@ -44,8 +45,28 @@ function App() {
         },
     ];
 
+    const secondTeamItemsDemo = [{
+        "id": 30,
+        "name": "Liste 2 Fatih"
+    },
+        {
+            "id": 40,
+            "name": "Nurcan 2"
+        },
+        {
+            "id": 50,
+            "name": "Ali 2"
+        },
+        {
+            "id": 60,
+            "name": "Alperen 2"
+        },
+    ];
+
+
     useEffect(() => {
         setFirstTeam(firstTeamItemsDemo);
+        setSecondTeam(secondTeamItemsDemo);
     }, []);
 
 
@@ -74,8 +95,12 @@ function App() {
 
     function handleOnDragEnd(result) {
         //if (!result.destination) return;
-
         const {source, destination} = result;
+
+        let dummyList = getDroppableList(source.droppableId);
+        console.log(dummyList);
+
+
 
         console.log(source);
         console.log(destination);
@@ -108,57 +133,83 @@ function App() {
         }
     }
 
-    const id2List = {
-        droppable: 'items',
-        droppable2: 'selected'
-    };
 
-    function getList(id) {
-        this.state[this.id2List[id]];
-    }
 
     function onDragEnd(result) {
+        console.log(result)
         const {source, destination} = result;
-
+        console.log("Source: ")
         console.log(source);
+        console.log("---------------")
+        console.log("Destination: ")
         console.log(destination);
-
+        console.log(source.droppableId);
         // dropped outside the list
+        console.log("---------------")
+
+
+        let dummyList = getDroppableList(source.droppableId);
+        console.log(dummyList);
+
         if (!destination) {
             return;
         }
 
         if (source.droppableId === destination.droppableId) {
             console.log("Aynı yere konuyor");
+            console.log(source)
             const items = reorder(
-                this.getList(source.droppableId),
+                getDroppableList(source.droppableId),
                 source.index,
                 destination.index
             );
+            updateDroppableList(source.droppableId, items);
 
-            let state = {items};
 
-            if (source.droppableId === 'droppable2') {
-                state = {selected: items};
-            }
-
-            this.setState(state);
         } else {
 
             console.log("Farklı yere konuyor");
-            const result = move(
-                this.getList(source.droppableId),
-                this.getList(destination.droppableId),
-                source,
-                destination
-            );
-
-            this.setState({
-                items: result.droppable,
-                selected: result.droppable2
-            });
+            // const result = move(
+            //     this.getList(source.droppableId),
+            //     this.getList(destination.droppableId),
+            //     source,
+            //     destination
+            // );
+            //
+            // this.setState({
+            //     items: result.droppable,
+            //     selected: result.droppable2
+            // });
         }
     }
+
+    const getDroppableList = (id) => {
+
+        switch (id) {
+            case "players":
+                return players;
+            case "team1":
+                return firstTeam;
+            case "team2":
+                return secondTeam;
+        }
+    }
+
+    const updateDroppableList = (id, list) => {
+
+        switch (id) {
+            case "players":
+                setPlayers(list);
+                return players;
+            case "team1":
+                setFirstTeam(list);
+                return firstTeam;
+            case "team2":
+                setSecondTeam(list)
+                return secondTeam;
+        }
+    }
+
 
     return (
 
@@ -177,15 +228,16 @@ function App() {
             </Box>
 
             <Grid container spacing={2}>
+                <DragDropContext onDragEnd={onDragEnd}>
                 <Grid item xs={4}>
                     <Item>
                         <h4>Tüm Oyuncular</h4>
 
                         <div>{players.length} players added</div>
 
-                        <DragDropContext onDragEnd={handleOnDragEnd}>
+
                             <Droppable droppableId="players">
-                                {(provided) => (
+                                {(provided, snapshot) => (
                                     <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
                                         {players.map(({id, name}, index) => {
                                             return (
@@ -205,7 +257,7 @@ function App() {
                                     </ul>
                                 )}
                             </Droppable>
-                        </DragDropContext>
+
 
                     </Item>
                 </Grid>
@@ -213,7 +265,7 @@ function App() {
                     <Item>
                         <h4>1. Takım</h4>
                         <div>{players.length} players added first team</div>
-                        <DragDropContext onDragEnd={onDragEnd}>
+
                             <Droppable droppableId="team1">
                                 {(provided) => (
 
@@ -237,18 +289,44 @@ function App() {
                                 )}
 
                             </Droppable>
-                        </DragDropContext>
+
 
                     </Item>
                 </Grid>
                 <Grid item xs={4}>
 
                     <Item>
-                        <h4>2. Takım</h4>
+                        <h4>1. Takım</h4>
+                        <div>{players.length} players added first team</div>
+
+                            <Droppable droppableId="team2">
+                                {(provided) => (
+
+                                    <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
+                                        {secondTeam.map(({id, name}, index) => {
+                                            return (
+                                                <Draggable key={id} draggableId={id + ""} index={index}>
+                                                    {(provided) => (
+                                                        <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+
+                                                            <p>
+                                                                {name}
+                                                            </p>
+                                                        </li>
+                                                    )}
+                                                </Draggable>
+                                            );
+                                        })}
+                                        {provided.placeholder}
+                                    </ul>
+                                )}
+
+                            </Droppable>
+
 
                     </Item>
                 </Grid>
-
+                </DragDropContext>
             </Grid>
 
 
