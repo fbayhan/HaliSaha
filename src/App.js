@@ -8,6 +8,7 @@ import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 import DnDDemo from "./DnDDemo";
 import {Grid, Paper} from "@mui/material";
 import {styled} from '@mui/material/styles';
+import SoccerField from "./SoccerField";
 
 function App() {
     const Item = styled(Paper)(({theme}) => ({
@@ -172,6 +173,10 @@ function App() {
     return (
 
         <Container fixed>
+
+            <SoccerField></SoccerField>
+
+
             {/*<DnDDemo></DnDDemo>*/}
             <h1>Room 5004</h1>    <h2>29 Mayıs 2022 Atatürk Halı Lisesi</h2>
             <p>You added {playerName}</p>
