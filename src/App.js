@@ -18,11 +18,9 @@ function App() {
         color: theme.palette.text.secondary,
     }));
 
-    const [count, setCount] = useState(0);
+
     const [players, setPlayers] = useState([]);
     const [playerName, setPlayerName] = useState("");
-    const [characters, updateCharacters] = useState(players);
-
     const [firstTeam, setFirstTeam] = useState([]);
     const [secondTeam, setSecondTeam] = useState([]);
 
@@ -64,10 +62,10 @@ function App() {
     ];
 
 
-    useEffect(() => {
-        setFirstTeam(firstTeamItemsDemo);
-        setSecondTeam(secondTeamItemsDemo);
-    }, []);
+    // useEffect(() => {
+    //     setFirstTeam(firstTeamItemsDemo);
+    //     setSecondTeam(secondTeamItemsDemo);
+    // }, []);
 
 
     function reorder(list, startIndex, endIndex) {
@@ -78,18 +76,18 @@ function App() {
         return result;
     };
 
-    function move(source, destination, droppableSource, droppableDestination) {
-        const sourceClone = Array.from(source);
-        const destClone = Array.from(destination);
-        const [removed] = sourceClone.splice(droppableSource.index, 1);
+    function move(source, destination) {
 
-        destClone.splice(droppableDestination.index, 0, removed);
+        let sourceArray = getDroppableList(source.droppableId);
+        let destinationArray = getDroppableList(destination.droppableId);
 
-        const result = {};
-        result[droppableSource.droppableId] = sourceClone;
-        result[droppableDestination.droppableId] = destClone;
 
-        return result;
+        let removedItem = sourceArray[source.index];
+        sourceArray.splice(source.index, 1);
+        destinationArray.splice(destination.index, 0, removedItem);
+        updateDroppableList(source.droppableId, sourceArray);
+        updateDroppableList(destination.droppableId, destinationArray);
+
     };
 
 
@@ -97,26 +95,12 @@ function App() {
         //if (!result.destination) return;
         const {source, destination} = result;
 
-        let dummyList = getDroppableList(source.droppableId);
-        console.log(dummyList);
-
-
-
-        console.log(source);
-        console.log(destination);
-
 
         const items = Array.from(players);
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
 
         setPlayers(items);
-    }
-
-    function handleOnDragEndFirstTeam(result) {
-        //if (!result.destination) return;
-        console.log(result);
-
     }
 
 
@@ -134,30 +118,14 @@ function App() {
     }
 
 
-
     function onDragEnd(result) {
-        console.log(result)
         const {source, destination} = result;
-        console.log("Source: ")
-        console.log(source);
-        console.log("---------------")
-        console.log("Destination: ")
-        console.log(destination);
-        console.log(source.droppableId);
-        // dropped outside the list
-        console.log("---------------")
 
-
-        let dummyList = getDroppableList(source.droppableId);
-        console.log(dummyList);
-
-        if (!destination) {
+        if (!destination || !source) {
             return;
         }
 
         if (source.droppableId === destination.droppableId) {
-            console.log("Aynı yere konuyor");
-            console.log(source)
             const items = reorder(
                 getDroppableList(source.droppableId),
                 source.index,
@@ -165,21 +133,11 @@ function App() {
             );
             updateDroppableList(source.droppableId, items);
 
-
         } else {
-
-            console.log("Farklı yere konuyor");
-            // const result = move(
-            //     this.getList(source.droppableId),
-            //     this.getList(destination.droppableId),
-            //     source,
-            //     destination
-            // );
-            //
-            // this.setState({
-            //     items: result.droppable,
-            //     selected: result.droppable2
-            // });
+            move(
+                source,
+                destination
+            );
         }
     }
 
@@ -229,11 +187,11 @@ function App() {
 
             <Grid container spacing={2}>
                 <DragDropContext onDragEnd={onDragEnd}>
-                <Grid item xs={4}>
-                    <Item>
-                        <h4>Tüm Oyuncular</h4>
+                    <Grid item xs={4}>
+                        <Item>
+                            <h4>Tüm Oyuncular</h4>
 
-                        <div>{players.length} players added</div>
+                            <div>{players.length} players added</div>
 
 
                             <Droppable droppableId="players">
@@ -259,12 +217,12 @@ function App() {
                             </Droppable>
 
 
-                    </Item>
-                </Grid>
-                <Grid item xs={4}>
-                    <Item>
-                        <h4>1. Takım</h4>
-                        <div>{players.length} players added first team</div>
+                        </Item>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Item>
+                            <h4>1. Takım</h4>
+                            <div>{firstTeam.length} players added first team</div>
 
                             <Droppable droppableId="team1">
                                 {(provided) => (
@@ -291,13 +249,13 @@ function App() {
                             </Droppable>
 
 
-                    </Item>
-                </Grid>
-                <Grid item xs={4}>
+                        </Item>
+                    </Grid>
+                    <Grid item xs={4}>
 
-                    <Item>
-                        <h4>1. Takım</h4>
-                        <div>{players.length} players added first team</div>
+                        <Item>
+                            <h4>2. Takım</h4>
+                            <div>{secondTeam.length} players added first team</div>
 
                             <Droppable droppableId="team2">
                                 {(provided) => (
@@ -324,8 +282,8 @@ function App() {
                             </Droppable>
 
 
-                    </Item>
-                </Grid>
+                        </Item>
+                    </Grid>
                 </DragDropContext>
             </Grid>
 
