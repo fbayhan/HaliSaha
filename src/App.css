@@ -36,11 +36,17 @@
   padding: .5em .8em .5em .5em;
   margin-bottom: 1em;
 }
-
+.characters span{
+  font-weight: bolder;
+}
 .characters p {
   max-width: none;
   font-weight: bold;
-  margin: 0;
+  margin: 0px 0px 0px 15px;
+
+}
+.characters label{
+   justifyContent: 'flex-end'
 }
 
 .characters-thumb {
