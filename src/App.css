@@ -64,3 +64,11 @@
   width: 100%;
   height: auto;
 }
+
+.soccer-field {
+  height: 150px;
+  background-image: url("./images/SoccerField.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

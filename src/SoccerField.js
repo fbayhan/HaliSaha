@@ -1,3 +1,5 @@
+import './App.css';
+
 import React from 'react';
 import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -30,9 +32,26 @@ function SoccerField(props) {
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
+
     function onDragEnd(result) {
         console.log("onDragEnd")
         console.log("onDragEnd")
+    }
+
+    const styles = {
+        soccerField: {
+            width: "100%",
+            aspectRatio: 0.67,
+            color: "blue",
+            backgroundImage: `url('${SoccerFieldImage}')`,
+            //   ` ve ' arasındaki farka bak
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+
+
+        }
+
     }
 
     return (
@@ -44,85 +63,85 @@ function SoccerField(props) {
 
                     <DragDropContext onDragEnd={onDragEnd}>
 
-                    <Grid item xs={8}>
-                        <h3>Saha</h3>
-                        <Item style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}>
-                            <div ref={ref}>
-                                <img src={SoccerFieldImage} width="100%" height="100%"/>
-                            </div>
+                        <Grid item xs={8}>
+                            <h3>Saha</h3>
+                            <Item style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}>
+                                <div ref={ref} style={styles.soccerField}>
+                                      {/*<img src={SoccerFieldImage} width="100%" height="100%"/>*/}
+                                </div>
 
-                        </Item>
-                    </Grid>
-
-                        <Droppable droppableId="firstTeam">
-                    <Grid item xs={4}>
-                        <h3> Oyuncular</h3>
+                            </Item>
+                        </Grid>
 
 
-                        <ul className="characters">
-                            <Draggable>
-                            <li>
-                                <span>1</span>
-                                <p>Fatih Bayhan </p>
-                                <IconButton color="primary"
-                                            aria-label="upload picture"
-                                            component="label">
-
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </li>
-                            </Draggable>
-                            <li>
-                                <span>3</span>
-                                <p>Fatih Bayhan </p>
-                                <IconButton color="primary"
-                                            aria-label="upload picture"
-                                            component="label">
-
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </li>
-                            <li>
-                                <span>5</span>
-                                <p>Fatih Bayhan </p>
-                                <IconButton color="primary"
-                                            aria-label="upload picture"
-                                            component="label">
-
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </li>
-                            <li>
-                                <span>6</span>
-                                <p>Fatih Bayhan </p>
-                                <IconButton color="primary"
-                                            aria-label="upload picture"
-                                            component="label">
-
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </li>
-                            <li>
-                                <span>7</span>
-                                <p>Fatih Bayhan </p>
-                                <IconButton color="primary"
-                                            aria-label="upload picture"
-                                            component="label">
-
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </li>
+                        <Grid item xs={4}>
+                            <h3> Oyuncular</h3>
 
 
-                        </ul>
+                            <ul className="characters">
+
+                                <li>
+                                    <span>1</span>
+                                    <p>Fatih Bayhan </p>
+                                    <IconButton color="primary"
+                                                aria-label="upload picture"
+                                                component="label">
+
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </li>
+
+                                <li>
+                                    <span>3</span>
+                                    <p>Fatih Bayhan </p>
+                                    <IconButton color="primary"
+                                                aria-label="upload picture"
+                                                component="label">
+
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </li>
+                                <li>
+                                    <span>5</span>
+                                    <p>Fatih Bayhan </p>
+                                    <IconButton color="primary"
+                                                aria-label="upload picture"
+                                                component="label">
+
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </li>
+                                <li>
+                                    <span>6</span>
+                                    <p>Fatih Bayhan </p>
+                                    <IconButton color="primary"
+                                                aria-label="upload picture"
+                                                component="label">
+
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </li>
+                                <li>
+                                    <span>7</span>
+                                    <p>Fatih Bayhan </p>
+                                    <IconButton color="primary"
+                                                aria-label="upload picture"
+                                                component="label">
+
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </li>
 
 
-                    </Grid>
-                        </Droppable>
+                            </ul>
+
+
+                        </Grid>
+
 
                     </DragDropContext>
                 </Grid>
@@ -133,15 +152,6 @@ function SoccerField(props) {
 
 
 }
-
-const mystyle = {
-    color: "white",
-    backgroundColor: "green",
-    padding: "10px",
-    fontFamily: "Arial",
-    height: 100
-
-};
 
 
 export default SoccerField;
