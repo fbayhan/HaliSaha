@@ -16,92 +16,6 @@ import SettingsAccessibilityIcon from '@mui/icons-material/SettingsAccessibility
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 function SoccerField(props) {
-
-
-    const soccerField = useRef(null);
-
-    const [width, setWidth] = useState(0);
-    const [height, setHeight] = useState(0);
-
-    const [localCoords, setLocalCoords] = useState({x: 0, y: 0});
-
-    const handleMouseMove = event => {
-        // 👇️ Get the mouse position relative to the element
-        setLocalCoords({
-            x: event.clientX - event.target.offsetLeft,
-            y: event.clientY - event.target.offsetTop,
-        });
-    };
-
-    useLayoutEffect(() => {
-        setWidth(soccerField.current.clientWidth);
-        setHeight(soccerField.current.clientHeight);
-    }, []);
-
-
-
-
-    const Item = styled(Paper)(({theme}) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    }));
-
-    function onDragEnd(result) {
-
-
-        console.log("onDragEnd")
-        console.log(localCoords.x + "  "+ localCoords.y)
-
-    }
-    const getCssByDragging = (snapshot) => {
-        // Giving isDraggingOver preference
-    //    console.log(snapshot);
-        if (snapshot.isDraggingOver) {
-            return 'pink';
-        }
-
-        // If it is the home list but not dragging over
-        if (snapshot.draggingFromThisWith) {
-            return 'blue';
-        }
-
-        // Otherwise use our default background
-        return 'white';
-    };
-
-
-
-
-    const styles = {
-        soccerField: {
-            width: "100%",
-            aspectRatio: 0.67,
-            backgroundImage: `url('${SoccerFieldImage}')`,
-            //   ` ve ' arasındaki farka bak
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            position: "relative"
-        },
-        fieldPlayer: {
-            display: 'block',
-            border: "solid 2px   #000000",
-            borderRadius: "50%",
-            color: "red",
-            aspectRatio: 1,
-            width: width * 0.1,
-            fontSize: width * 0.08,
-            position: "absolute",
-
-
-        }
-    }
-
-
-
     const field = [
         {
             "id": 41,
@@ -185,6 +99,112 @@ function SoccerField(props) {
             "team": 1
         }
     ];
+
+    const soccerField = useRef(null);
+
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
+
+    const [localCoords, setLocalCoords] = useState({x: 0, y: 0});
+
+    const [playerCoords, setPlayerCoords] = useState(field);
+
+
+    const handleMouseMove = event => {
+        // 👇️ Get the mouse position relative to the element
+        setLocalCoords({
+            x: event.clientX - event.target.offsetLeft,
+            y: event.clientY - event.target.offsetTop,
+        });
+    };
+
+
+    const fieldPlayerMoved = playerId => event => {
+        console.log(playerCoords);
+        console.log("Fatih " + playerId);
+        event.stopPropagation();
+        event.preventDefault();
+        const yAxis = event.clientY - event.target.offsetTop;
+        const xAxis = event.clientX - event.target.offsetLeft;
+
+        console.log(xAxis, yAxis);
+        setLocalCoords({
+            x: event.clientX - event.target.offsetLeft,
+            y: event.clientY - event.target.offsetTop,
+        });
+
+        let objIndex = playerCoords.findIndex(obj => obj.id == playerId);
+        let updatedArray = playerCoords;
+        console.log(objIndex)
+        updatedArray[objIndex].top=xAxis;
+        updatedArray[objIndex].left=yAxis;
+        setPlayerCoords(updatedArray);
+
+        console.log(playerCoords);
+
+    }
+
+    useLayoutEffect(() => {
+        setWidth(soccerField.current.clientWidth);
+        setHeight(soccerField.current.clientHeight);
+    }, []);
+
+
+    const Item = styled(Paper)(({theme}) => ({
+        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+        ...theme.typography.body2,
+        padding: theme.spacing(1),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    }));
+
+    function onDragEnd(result) {
+        console.log("onDragEnd")
+        console.log(localCoords.x + "  " + localCoords.y)
+    }
+
+
+    const getCssByDragging = (snapshot) => {
+        // Giving isDraggingOver preference
+        //    console.log(snapshot);
+        if (snapshot.isDraggingOver) {
+            return 'pink';
+        }
+
+        // If it is the home list but not dragging over
+        if (snapshot.draggingFromThisWith) {
+            return 'blue';
+        }
+
+        // Otherwise use our default background
+        return 'white';
+    };
+
+    const styles = {
+        soccerField: {
+            width: "100%",
+            aspectRatio: 0.67,
+            backgroundImage: `url('${SoccerFieldImage}')`,
+            //   ` ve ' arasındaki farka bak
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            position: "relative"
+        },
+        fieldPlayer: {
+            display: 'block',
+            border: "solid 2px   #000000",
+            borderRadius: "50%",
+            color: "red",
+            aspectRatio: 1,
+            width: width * 0.1,
+            fontSize: width * 0.08,
+            position: "absolute  ",
+
+
+        }
+    }
+
 
 
     const firstTeam = [
@@ -319,71 +339,124 @@ function SoccerField(props) {
         }
     ];
 
-
     return (
         <div>
             <h2 onMouseMove={handleMouseMove}>Player Wizard</h2>
             <hr/>
             <Box sx={{flexGrow: 1}}>
                 <Grid container spacing={2}>
-                    <DragDropContext onDragEnd={onDragEnd}  >
+                    <DragDropContext onDragEnd={onDragEnd}>
 
-                        <Grid item xs={8} >
+                        <Grid item xs={8}>
                             <h2>
                                 Relative: ({localCoords.x}, {localCoords.y})
                             </h2>
-                            <br />
+                            <br/>
 
 
                             <h3>Saha {width}</h3>
-                            <Item    onMouseUp={handleMouseMove} >
-                                <Droppable droppableId="field">
-                                    {(provided, snapshot) => (
-                                        <div ref={soccerField}    >
-                                            <div ref={provided.innerRef}
-                                                 style={styles.soccerField}  {...provided.droppableProps} >
 
-                                                {field.map(({
-                                                                    id,
-                                                                    GoalKeeper,
-                                                                    Name,
-                                                                    BackNumber,
-                                                                    top,
-                                                                    left,
-                                                                team
-                                                                }, index) => {
-                                                    return (
-                                                        <Draggable key={id} draggableId={id + ""} index={index}>
-                                                            {(provided) => (
-                                                                <span style={{...styles.fieldPlayer, left:index*40, top:index*100}}
-                                                                      ref={provided.innerRef}    {...provided.dragHandleProps}  {...provided.draggableProps}
+                            {/*Burayı şimdilik yoruma attım, yeniden hard coded yapacağım, yaptığımda silerim*/}
 
-                                                                >
-                                                                    {getCssByDragging(snapshot)}
-                                                                    {index} {team}
+                            {/*<Item    onMouseUp={handleMouseMove} >*/}
+                            {/*    <Droppable droppableId="field">*/}
+                            {/*        {(provided, snapshot) => (*/}
+                            {/*            <div ref={soccerField}    >*/}
+                            {/*                <div ref={provided.innerRef}*/}
+                            {/*                     style={styles.soccerField}  {...provided.droppableProps} >*/}
 
-                                                                </span>
+                            {/*                    {field.map(({*/}
+                            {/*                                        id,*/}
+                            {/*                                        GoalKeeper,*/}
+                            {/*                                        Name,*/}
+                            {/*                                        BackNumber,*/}
+                            {/*                                        top,*/}
+                            {/*                                        left,*/}
+                            {/*                                    team*/}
+                            {/*                                    }, index) => {*/}
+                            {/*                        return (*/}
+                            {/*                            <Draggable key={id} draggableId={id + ""} index={index}>*/}
+                            {/*                                {(provided) => (*/}
+                            {/*                                    <span style={{...styles.fieldPlayer, left:150, top:250}}*/}
+                            {/*                                          ref={provided.innerRef}    {...provided.dragHandleProps}  {...provided.draggableProps}*/}
+                            {/*                                    >*/}
+                            {/*                                        {getCssByDragging(snapshot)}*/}
+                            {/*                                        {index} {team}*/}
 
-                                                        //         <span style={{
-                                                        //             ...styles.fieldPlayer, left: left,
-                                                        //             top: top
-                                                        //         }}
-                                                        //               ref={provided.innerRef} {...provided.draggableProps}
-                                                        //               {...provided.dragHandleProps}>
-                                                        // {BackNumber}</span>
-                                                            )}
+                            {/*                                    </span>*/}
 
-                                                        </Draggable>
-                                                    )
-                                                })}
+                            {/*                            //         <span style={{*/}
+                            {/*                            //             ...styles.fieldPlayer, left: left,*/}
+                            {/*                            //             top: top*/}
+                            {/*                            //         }}*/}
+                            {/*                            //               ref={provided.innerRef} {...provided.draggableProps}*/}
+                            {/*                            //               {...provided.dragHandleProps}>*/}
+                            {/*                            // {BackNumber}</span>*/}
 
-                                                {provided.placeholder}
-                                            </div>
+                            {/*                                )}*/}
 
-                                        </div>
-                                    )}
-                                </Droppable>
+                            {/*                            </Draggable>*/}
+                            {/*                        )*/}
+                            {/*                    })}*/}
+
+                            {/*                    /!*{provided.placeholder}*!/*/}
+                            {/*                    <span style={{*/}
+                            {/*                        ...styles.fieldPlayer, left: 150,*/}
+                            {/*                        top: 150*/}
+                            {/*                    }}*/}
+                            {/*                    >*/}
+                            {/*                                 22</span>*/}
+                            {/*                </div>*/}
+
+                            {/*            </div>*/}
+                            {/*        )}*/}
+                            {/*    </Droppable>*/}
+
+
+                            {/*</Item>*/}
+
+                            {/*Burayı şimdilik yoruma attım, yeniden hard coded yapacağım, yaptığımda silerim, ikisinin arasını yoruma açabilirsin gerekirse*/}
+
+
+                            <Item onMouseUp={handleMouseMove}>
+
+                                <div ref={soccerField}>
+                                    <div
+                                        style={styles.soccerField}>
+
+                                        {field.map(({
+                                                        id,
+                                                        GoalKeeper,
+                                                        Name,
+                                                        BackNumber,
+                                                        top,
+                                                        left,
+                                                        team
+                                                    }, index) => {
+                                            return (
+
+
+                                                <span  key={id} style={{
+                                                    ...styles.fieldPlayer, left: left,
+                                                    top: top
+                                                }} draggable="true"
+                                                      onDragOver={fieldPlayerMoved(id)}
+                                                >
+                                                                {BackNumber}</span>
+
+
+                                            )
+                                        })}
+
+
+                                    </div>
+
+                                </div>
+
+
                             </Item>
+
+
                         </Grid>
 
 
